@@ -1,8 +1,41 @@
+#include <ctime>
+#include <cstdlib>
 #include <iostream>
-#include <string>
-#include <algorithm>
+
+#include "table.hh"
 
 using namespace std;
+
+table::table()
+{
+	cout << "Podaj rozmiar tablicy: ";
+	cin >> ROZMIAR;
+
+	_table = new int [ROZMIAR];
+
+	srand(time(NULL));
+
+	for (int i=0 ; i < ROZMIAR ; i++)
+	{
+		//_table[i] = ((rand() % ROZMIAR) + 1);  // losowe liczby z zakresu od 1 do ROZMIAR 
+		//_table[i] = i+1;                         // rosnace liczby
+		_table[i] = (ROZMIAR-i);               // malejace liczby
+	}
+}
+
+table::~table()
+{
+	delete [] _table;
+}
+
+void table::size()
+{
+	for (int i=0 ; i < ROZMIAR ; i++)
+	{
+		cout << _table[i] << " ";
+	}
+	cout << endl;
+}
 
 void *sortuj_slowa(string tab_slow[], int ile_liczb)
 {
@@ -39,7 +72,7 @@ int hasz(string slowo, string tab[])
 	}
 }
 
-int main()
+void table::run()
 {
 	string tab_klucz[6];
 
@@ -71,6 +104,4 @@ int main()
 	cin >> slowo;
 
 	cout << slowo << " " << tab[hasz(slowo,tab_klucz)] << endl;
-
-	return 0;
 }
