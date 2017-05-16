@@ -1,107 +1,100 @@
-#include <ctime>
 #include <cstdlib>
 #include <iostream>
-
+#include <string>
 #include "table.hh"
 
 using namespace std;
 
 table::table()
 {
-	cout << "Podaj rozmiar tablicy: ";
+	cout << "Ile wyrazow chcesz wprowadzic?";
 	cin >> ROZMIAR;
+
+	tab_klucz = new string [ROZMIAR];
+
+	for(int i=0 ; i < ROZMIAR ; i++)
+	{
+		cout << "Podaj wyraz nr " << i << " ";
+		cin >> tab_klucz[i];
+	}
+
+	sortuj_slowa();
 
 	_table = new int [ROZMIAR];
 
-	srand(time(NULL));
-
-	for (int i=0 ; i < ROZMIAR ; i++)
+	for(int i=0 ; i < ROZMIAR ; i++)
 	{
-		//_table[i] = ((rand() % ROZMIAR) + 1);  // losowe liczby z zakresu od 1 do ROZMIAR 
-		//_table[i] = i+1;                         // rosnace liczby
-		_table[i] = (ROZMIAR-i);               // malejace liczby
+		_table[i] = i;
 	}
 }
 
 table::~table()
 {
 	delete [] _table;
+	delete [] tab_klucz;
 }
 
-void table::size()
+void table::sortuj_slowa()
 {
-	for (int i=0 ; i < ROZMIAR ; i++)
-	{
-		cout << _table[i] << " ";
-	}
-	cout << endl;
-}
+	int i, zmiana;
+	string temp;
 
-void *sortuj_slowa(string tab_slow[], int ile_liczb)
-{
-	int temp,i,zmiana;
-	
 	do
 	{
-		zmiana=0;
-		i=ile_liczb-1;
+		zmiana = 0;
+		i = ROZMIAR-1;
 		
 		do
 		{
 			i--;
 
-			if((tab_slow[i+1])[0] < (tab_slow[i])[0])
+			if((tab_klucz[i+1])[0] < (tab_klucz[i])[0])
 				{
-					swap(tab_slow[i],tab_slow[i+1]);
-					zmiana=1;
+					temp = tab_klucz[i];
+					tab_klucz[i] = tab_klucz[i+1];
+					tab_klucz[i+1] = temp;
+					zmiana = 1;
 				}
 
-		}while (i!=0);
+		}while (i != 0);
 
-	}while (zmiana!=0);
+	}while (zmiana != 0);
 }
 
-int hasz(string slowo, string tab[])
+int table::hasz(string slowo)
 {
-	for(int i=0;i<6;i++)
+	for(int i = 0 ; i < ROZMIAR ; i++)
 	{
-		if(slowo == tab[i])
+		if(slowo == tab_klucz[i])
 		{
 			return i;
 		}
 	}
 }
 
+void table::klucz()
+{
+	for(int i = 0 ; i < ROZMIAR ; i++)
+	{
+		cout << "Nr: " << i << " ; " << "Slowo: " << tab_klucz[i] << endl;
+	}
+}
+
+void table::wyswietl()
+{
+	string slowo;
+
+	while (slowo != "end")
+	{	
+		cout << "Podaj slowo (end aby zakonczyc): ";
+		cin >> slowo;
+		cout << slowo << " " << _table[hasz(slowo)] << endl;
+	}
+}
+
 void table::run()
 {
-	string tab_klucz[6];
+	klucz();
 
-	tab_klucz[0] = "krowa";
-	tab_klucz[1] = "arbuz";
-	tab_klucz[2] = "draka";
-	tab_klucz[3] = "wilk";
-	tab_klucz[4] = "ognisko";
-	tab_klucz[5] = "arbuz";
-
-	sortuj_slowa(tab_klucz,6);
-
-	for(int i=0;i<6;i++)
-	{
-		cout << tab_klucz[i] << " ";
-	}
-	
-	cout << endl;
-	
-	int tab[6];
-
-	for(int i=0;i<6;i++)
-	{
-		tab[i] = i ;
-	}
-
-	string slowo;
-	cout << "Podaj slowo:";
-	cin >> slowo;
-
-	cout << slowo << " " << tab[hasz(slowo,tab_klucz)] << endl;
+	wyswietl();	
 }
