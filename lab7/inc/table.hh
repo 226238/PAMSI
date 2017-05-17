@@ -14,17 +14,17 @@ class table : public itable, public irunnable {//.............................
 
 public:
 	void run();
-	void sortuj_slowa();
 	int hasz(string slowo);
-	void klucz();
 	void wyswietl();
-
+	void dodaj_element();
+	void znajdz();
+	
 	table();
 	~table();
 
 private:
 	string *tab_klucz;
-	int *_table;
+	int *tab_wartosc;
 	int ROZMIAR;
 
 };//..........................................

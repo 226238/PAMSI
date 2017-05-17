@@ -1,64 +1,53 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <ctime>
 #include "table.hh"
 
 using namespace std;
 
-table::table()
+table::table()  // konstruktor definiujacy ile elementow bedzie w tablicy
 {
-	cout << "Ile wyrazow chcesz wprowadzic?";
+	cout << "Ile elementow chcesz wprowadzic ? ";
 	cin >> ROZMIAR;
 
 	tab_klucz = new string [ROZMIAR];
 
-	for(int i=0 ; i < ROZMIAR ; i++)
-	{
-		cout << "Podaj wyraz nr " << i << " ";
-		cin >> tab_klucz[i];
-	}
-
-	sortuj_slowa();
-
-	_table = new int [ROZMIAR];
-
-	for(int i=0 ; i < ROZMIAR ; i++)
-	{
-		_table[i] = i;
-	}
+	tab_wartosc = new int [ROZMIAR];
 }
 
 table::~table()
 {
-	delete [] _table;
 	delete [] tab_klucz;
+	delete [] tab_wartosc;
 }
 
-void table::sortuj_slowa()
+void table::dodaj_element()  // dodawanie elementu i jego wartosci pojedynczo z klawiatury lub generowanie losowych elementow i wartosci
 {
-	int i, zmiana;
-	string temp;
+	srand(time(NULL));
+	int wartosc, ile_liter_ma_miec_slowo = 4;
 
-	do
+	for(int i=0 ; i < ROZMIAR ; i++)
 	{
-		zmiana = 0;
-		i = ROZMIAR-1;
-		
-		do
+/*
+		cout << "Podaj slowo: ";
+		cin >> slowo;
+		cout << "Podaj wartosc dla slowa " << slowo << " ";
+		cin >> wartosc;
+*/
+
+		string slowo = "";
+
+		for(int n = 0 ; n < ile_liter_ma_miec_slowo ; n++)
 		{
-			i--;
+			slowo += ((rand() % 25) + 97);
+		}
 
-			if((tab_klucz[i+1])[0] < (tab_klucz[i])[0])
-				{
-					temp = tab_klucz[i];
-					tab_klucz[i] = tab_klucz[i+1];
-					tab_klucz[i+1] = temp;
-					zmiana = 1;
-				}
+		wartosc = (rand() % 9000) + 1000;
 
-		}while (i != 0);
-
-	}while (zmiana != 0);
+		tab_klucz[i] = slowo;
+		tab_wartosc[i] = wartosc;
+	}
 }
 
 int table::hasz(string slowo)
@@ -72,29 +61,43 @@ int table::hasz(string slowo)
 	}
 }
 
-void table::klucz()
+void table::wyswietl() // funkcja wyswietla wartosc podanego slowa z tablicy lub wszystkie slowa wraz z wartosciami
 {
-	for(int i = 0 ; i < ROZMIAR ; i++)
-	{
-		cout << "Nr: " << i << " ; " << "Slowo: " << tab_klucz[i] << endl;
-	}
-}
-
-void table::wyswietl()
-{
+/*
 	string slowo;
 
 	while (slowo != "end")
 	{	
 		cout << "Podaj slowo (end aby zakonczyc): ";
 		cin >> slowo;
-		cout << slowo << " " << _table[hasz(slowo)] << endl;
+		cout << "Wartosc slowa " << slowo << " to " << tab_wartosc[hasz(slowo)] << "." << endl;
 	}
+*/
+	for(int i = 0 ; i < ROZMIAR ; i++)
+	{
+		cout << tab_klucz[i] << "_" << tab_wartosc[hasz(tab_klucz[i])] << " ";
+	}
+
+	cout << endl;
+}
+
+void table::znajdz() // funkcja znajduje slowo po indeksie w tablicy
+{
+	int co;
+
+	//co = 0;           // szukanie wartosci znajdujacej sie na poczatku
+	//co = (ROZMIAR-1);     // szukanie wartosci znajdujacej sie na koncu
+	co = (ROZMIAR/2);  // szukanie wartosci znajdujacej sie po srodku
+
+	cout << tab_klucz[co] << "_" << tab_wartosc[hasz(tab_klucz[co])] << endl;
 }
 
 void table::run()
 {
-	klucz();
+	dodaj_element();
 
-	wyswietl();	
+	//wyswietl();	
+
+	znajdz();
 }
+
