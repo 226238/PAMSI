@@ -21,12 +21,13 @@ class tree : public itree, public irunnable {//.............................
 private:
 
 	leaf *root = NULL;
+	int min;
 
 public:
 
 	void run();
 	void add(int n, leaf *start);
-	void in_order_tree_walk(leaf *start);
+	void find(leaf *start);
 	void guard(leaf *start);
 
 	leaf *rotation_RR(leaf *start, leaf *A);

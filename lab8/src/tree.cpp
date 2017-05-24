@@ -7,10 +7,17 @@ using namespace std;
 
 void tree::guard(leaf *start)
 {
-	//if(start -> balance == -1) rotation_RL(root, start);
-	if (start -> balance == -2) rotation_RR(root, start);
-	//if(start -> balance == 1) rotation_LR(root, start);
-	if (start -> balance == 2) rotation_LL(root, start);
+	if(start -> left)
+	{
+		if(start -> balance == 2 && start -> left -> balance == 1) rotation_LL(root, start);
+		if(start -> balance == 2 && start -> left -> balance == -1) rotation_LR(root, start);
+	}
+
+	if(start -> right)
+	{
+		if(start -> balance == -2 && start -> right -> balance == -1) rotation_RR(root, start);
+		if(start -> balance == -2 && start -> right -> balance == 1) rotation_RL(root, start);
+	}
 
 	if(start -> left != NULL)
 	guard(start -> left);
@@ -21,7 +28,7 @@ void tree::guard(leaf *start)
 
 void tree::add(int n, leaf *start)
 {
-	if (root == NULL)
+	if(root == NULL)
 	{
 		root = new leaf;
 		root -> data = n;
@@ -52,6 +59,7 @@ void tree::add(int n, leaf *start)
 			if(start -> up)
 			{
 				if(_new == start -> left) start -> up -> balance += 1;
+				if(_new == start -> left && start == start -> up -> right) start -> up -> balance += -2;
 			}
 		}
 	}
@@ -77,11 +85,12 @@ void tree::add(int n, leaf *start)
 			if(start -> up)
 			{
 				if(_new == start -> right) start -> up -> balance += -1;
+				if(_new == start -> right && start == start -> up -> left) start -> up -> balance += 2;
 			}
 		}
 	}
 
-	//guard(root);
+	guard(root);
 }
 
 leaf *tree::rotation_RR(leaf *start, leaf *A)
@@ -279,32 +288,42 @@ leaf *tree::rotation_LR(leaf *start, leaf *A)
 }
 
 
-void tree::in_order_tree_walk(leaf *start)
+void tree::find(leaf *start)
 {
-	if(start -> left != NULL)
-	in_order_tree_walk(start -> left);
- 
-	cout << start -> data;
+	if(start == root)
+	{
+		min = root -> data;
+	}
+	else
+	{
+		if(start -> data < min)
+		{
+			start -> data = min;
+		}
+	}
 
+	if(start -> left != NULL)
+	find(start -> left);
  
 	if(start -> right != NULL)
-	in_order_tree_walk(start -> right);
+	find(start -> right);
 }
 
 void tree::run()
 {
-	int q,ile;
-	cout << "ile";
+	srand(time(NULL));
+
+	int value, ile;
+	cout << "Ile elementow chcesz wprowadzic: ";
 	cin >> ile;
 
-	for(int i=0;i<ile;i++)
+	for(int i = 0 ; i < ile ; i++)
 	{
-		cin >> q;
-		add(q,root);
-		cout << "root balance " << root -> balance << endl;
+		value = rand() % 100000 + 1;
+		add(value, root);
 	}
 
-	cout << "root balance " << root -> balance << endl;
+	find(root);
 
-	//in_order_tree_walk(root);
+	cout << "Najmniejsza wartosc to " << min << "." << endl;
 }
