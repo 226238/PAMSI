@@ -5,6 +5,7 @@
 
 #include "itable.hh"
 #include "irunnable.hh"
+#include "list.hh"
 
 using namespace std;
 
@@ -14,19 +15,15 @@ class table : public itable, public irunnable {//.............................
 
 public:
 	void run();
-	int hasz(string slowo);
-	void wyswietl();
-	void dodaj_element();
-	void znajdz();
-	
+	int hash(string key);
+	void add_elem(string key, int data);
+	void find_elem(string key);
+
 	table();
-	~table();
 
 private:
-	string *tab_klucz;
-	int *tab_wartosc;
-	int ROZMIAR;
-
+	list *_table;
+	int _size;
 };//..........................................
 
 #endif

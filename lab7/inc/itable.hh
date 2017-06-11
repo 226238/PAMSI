@@ -10,10 +10,9 @@ using namespace std;
 class itable{//.............................
 
 public:
-	virtual void dodaj_element() = 0;
-	virtual int hasz(string slowo) = 0;
-	virtual void wyswietl() = 0;
-	virtual void znajdz() = 0;
+	virtual int hash(string key) = 0;
+	virtual void add_elem(string key, int data) = 0;
+	virtual void find_elem(string key) = 0;
 };//..........................................
 
 #endif

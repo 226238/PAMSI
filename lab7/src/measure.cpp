@@ -40,7 +40,7 @@ void measure::stop() // zatrzymanie stopera
 
 void measure::gauge(irunnable & test_obj)   // pomiar czasu dzialania algorytmu
 {
-	start();
+	//start();
 	test_obj.run();
-	stop();
+	//stop();
 }

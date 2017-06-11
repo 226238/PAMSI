@@ -3,8 +3,8 @@
 #
 CPPFLAGS = -c -g -Iinc -Wall -pedantic
 
-benchmark.out: obj/main.o obj/irunnable.o obj/imeasure.o obj/measure.o obj/itable.o obj/table.o
-	g++ -Wall -pedantic -o benchmark.out obj/main.o obj/irunnable.o obj/imeasure.o obj/measure.o obj/itable.o obj/table.o
+benchmark.out: obj/main.o obj/irunnable.o obj/imeasure.o obj/measure.o obj/itable.o obj/table.o obj/list.o
+	g++ -Wall -pedantic -o benchmark.out obj/main.o obj/irunnable.o obj/imeasure.o obj/measure.o obj/itable.o obj/table.o obj/list.o
 
 obj/main.o: src/main.cpp inc/irunnable.hh inc/imeasure.hh inc/measure.hh inc/itable.hh inc/table.hh
 	g++ ${CPPFLAGS} -o obj/main.o src/main.cpp
@@ -23,6 +23,10 @@ obj/itable.o: src/itable.cpp inc/itable.hh
 
 obj/table.o: src/table.cpp inc/table.hh
 	g++ ${CPPFLAGS} -o obj/table.o src/table.cpp
+
+obj/list.o: src/list.cpp inc/list.hh
+	g++ ${CPPFLAGS} -o obj/list.o src/list.cpp
+
 
 clean:
 	rm -f obj/*.o benchmark.out
