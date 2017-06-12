@@ -2,98 +2,133 @@
 #include <iostream>
 #include <ctime>
 #include "tree.hh"
+#include "measure.hh"
 
 using namespace std;
 
-void tree::guard(leaf *start)
+void tree::add(tree * T, int ile_wezlow)
 {
-	if(start -> left)
+	srand(time(NULL));
+
+ 	leaf *x;
+
+	cout << "Liczba wezlow drzewa: " << T -> count << endl << endl;
+
+	for(int i = 0 ; i < ile_wezlow ; i++)
 	{
-		if(start -> balance == 2 && start -> left -> balance == 1) rotation_LL(root, start);
-		if(start -> balance == 2 && start -> left -> balance == -1) rotation_LR(root, start);
+		x = new leaf;
+		x -> data = rand()%100000 + 1;
+		T -> insert(x);      
 	}
-
-	if(start -> right)
-	{
-		if(start -> balance == -2 && start -> right -> balance == -1) rotation_RR(root, start);
-		if(start -> balance == -2 && start -> right -> balance == 1) rotation_RL(root, start);
-	}
-
-	if(start -> left != NULL)
-	guard(start -> left);
-
-	if(start -> right != NULL)
-	guard(start -> right);
+  
+	cout << endl;
+	cout << "Liczba wezlow drzewa: " << T -> count << endl << endl;      
 }
 
-void tree::add(int n, leaf *start)
+bool tree::insert(leaf * n)
 {
-	if(root == NULL)
+	leaf * x = root;
+	leaf * y = root;
+	leaf * z = root;
+
+	y = n -> left = n -> right = NULL;
+	n -> balance = 0;
+
+	while(x)
 	{
-		root = new leaf;
-		root -> data = n;
-		root -> left = NULL;
-		root -> right = NULL;
-		root -> up = NULL;
-		root -> balance = 0;
+		if(x -> data == n -> data)
+    	{
+    		delete n;
+    		return false;
+    	}
+
+		y = x;
+		x = (n -> data < x -> data) ? x -> left : x -> right;
+	}
+  
+	count++;
+  
+	if(!(n -> up = y))
+	{
+		root = n;
+		return true;
 	}
 
-	else if(n < start -> data)
+	if(n -> data < y -> data) 
 	{
-		if(start -> left != NULL)
-		{
-			add(n,start -> left);
-		}
-
-		else
-		{
-			leaf *_new = new leaf;
-			start -> left = _new;
-			_new -> data = n;
-			_new -> left = NULL;
-			_new -> right = NULL;
-			_new -> up = start;
-			_new -> balance = 0;
-			start -> balance += 1;
-
-			if(start -> up)
-			{
-				if(_new == start -> left) start -> up -> balance += 1;
-				if(_new == start -> left && start == start -> up -> right) start -> up -> balance += -2;
-			}
-		}
+		y -> left = n; 
 	}
+
+	else y -> right = n;
+	
+	if(y -> balance)
+	{
+		y -> balance = 0;
+		return true;
+	}
+
+	y -> balance = (y -> left == n) ? 1 : -1;
+	z = y -> up;
+
+	while(z)
+	{
+		if(z -> balance) 
+		{
+			break;
+		}
+
+		z -> balance = (z -> left == y) ? 1 : -1;
+		y = z; z = z -> up;
+	}
+
+	if(!z) 
+	{
+		return true;
+	}
+
+	if(z -> balance == 1)
+	{
+		if(z -> right == y)
+		{
+			z -> balance = 0;
+			return true;
+		}
+
+		if(y -> balance == -1) 
+		{	
+			rotation_LR(z); 
+		}
+		else 
+		{
+			rotation_LL(z);
+    	}
+
+    	return true;
+  	}
 
 	else
-	{     
-		if(start -> right != NULL)
+	{
+		if(z -> left == y)
 		{
-			add(n,start -> right);
-		}    
-
-		else
-		{
-			leaf *_new = new leaf;
-			start -> right = _new;
-			_new -> data = n;
-			_new -> left = NULL;
-			_new -> right = NULL;
-			_new -> up = start;
-			_new -> balance = 0;
-			start -> balance += -1;
-
-			if(start -> up)
-			{
-				if(_new == start -> right) start -> up -> balance += -1;
-				if(_new == start -> right && start == start -> up -> left) start -> up -> balance += 2;
-			}
+			z -> balance = 0;
+			return true;
 		}
-	}
 
-	guard(root);
+		if(y -> balance == 1) 
+		{
+			rotation_RL(z); 
+		}
+
+		else 
+		{
+			rotation_RR(z);
+		}
+
+		return true;
+	}
 }
 
-leaf *tree::rotation_RR(leaf *start, leaf *A)
+leaf *tree::rotation_RR(leaf *A)
 {
 	leaf *B = A -> right;
 	leaf *P = A -> up;
@@ -124,7 +159,7 @@ leaf *tree::rotation_RR(leaf *start, leaf *A)
 
 	else
 	{
-		start = B;
+		root = B;
 	}
 
 	if(B -> balance == -1)
@@ -141,7 +176,7 @@ leaf *tree::rotation_RR(leaf *start, leaf *A)
 	return B;
 }
 
-leaf *tree::rotation_LL(leaf *start, leaf *A)
+leaf *tree::rotation_LL(leaf *A)
 {
 	leaf *B = A -> left;
 	leaf *P = A -> up;
@@ -172,7 +207,7 @@ leaf *tree::rotation_LL(leaf *start, leaf *A)
 
 	else
 	{
-		start = B;
+		root = B;
 	}
 
 	if(B -> balance == 1)
@@ -189,7 +224,7 @@ leaf *tree::rotation_LL(leaf *start, leaf *A)
 	return B;
 }
 
-leaf *tree::rotation_RL(leaf *start, leaf *A)
+leaf *tree::rotation_RL(leaf *A)
 {
 	leaf *B = A -> right;
 	leaf *C = B -> left;
@@ -229,7 +264,7 @@ leaf *tree::rotation_RL(leaf *start, leaf *A)
 
 	else
 	{
-		start = C;
+		root = C;
 	}
 
 	A -> balance = (C -> balance == -1) ? 1 : 0;
@@ -238,7 +273,7 @@ leaf *tree::rotation_RL(leaf *start, leaf *A)
 	return C;
 }
 
-leaf *tree::rotation_LR(leaf *start, leaf *A)
+leaf *tree::rotation_LR(leaf *A)
 {
 	leaf *B = A -> left;
 	leaf *C = B -> right;
@@ -278,7 +313,7 @@ leaf *tree::rotation_LR(leaf *start, leaf *A)
 
 	else
 	{
-		start = C;
+		root = C;
 	}
 
 	A -> balance = (C -> balance == 1) ? -1 : 0;
@@ -288,42 +323,25 @@ leaf *tree::rotation_LR(leaf *start, leaf *A)
 }
 
 
-void tree::find(leaf *start)
+int tree::find_min(leaf * x)
 {
-	if(start == root)
-	{
-		min = root -> data;
-	}
-	else
-	{
-		if(start -> data < min)
-		{
-			start -> data = min;
-		}
-	}
+	while(x -> left) x = x -> left;
 
-	if(start -> left != NULL)
-	find(start -> left);
- 
-	if(start -> right != NULL)
-	find(start -> right);
+	return x -> data;  
 }
 
 void tree::run()
 {
 	srand(time(NULL));
+	tree *T = new tree();
+	measure m;
 
-	int value, ile;
-	cout << "Ile elementow chcesz wprowadzic: ";
+	int ile;
+
+	cout << "Ile danych wprowadzic ?";
 	cin >> ile;
 
-	for(int i = 0 ; i < ile ; i++)
-	{
-		value = rand() % 100000 + 1;
-		add(value, root);
-	}
+	add(T,ile);
 
-	find(root);
-
-	cout << "Najmniejsza wartosc to " << min << "." << endl;
+	cout << "search min " << find_min(T -> root) << endl;
 }
